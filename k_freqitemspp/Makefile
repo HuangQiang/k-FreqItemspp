@@ -9,7 +9,7 @@ OPT     = -w -O3
 FLAGS   = -lm -ldl -lnsl -lutil
 
 # ------------------------------------------------------------------------------
-#  Compiler with OpenMP (first .cu, then .cc, order-sensitive)
+#  Compiler with OpenMP
 # ------------------------------------------------------------------------------
 all:$(ALLOBJS)
 	$(COMP) $(OPENMP) $(OPT) -o kpp $(FLAGS) $(ALLOBJS)

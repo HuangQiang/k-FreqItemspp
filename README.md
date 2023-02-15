@@ -1,25 +1,29 @@
 # k-FreqItems++
 
-Welcome to the **k-FreqItems** GitHub!
+Welcome to the **k-FreqItems++** GitHub!
 
-k-FreqItems++ is a sparse data clustering method based on Jaccard distance. This repo contains a CPU version of k-FreqItems++ with OpenMP optimization.
+k-FreqItems++ is a sparse data clustering method based on Jaccard distance. This repo contains a single machine version of k-FreqItems++ with OpenMP optimization. There are three characteristics of k-FreqItems++ for this version:
+
+- Friendly to the laptop with Ubuntu and easy-to-compile
+- Auto-detect and leverage all CPU threads for parallel computation
+- Parameter-light (only need to set $k$ and $\alpha$)
 
 ## Data Format
 
-We have enclosed two sparse data sets Amazon and News20 as toy examples for testing. The input sparse data sets are stored in binary format, where each file consists of two fields: `pos` and `data`, as shown below:
+We have enclosed two small sparse data sets Amazon and News20 as toy examples for testing. The input sparse data sets are stored in binary format, where each file consists of two fields: `pos` and `data`, as shown below:
 
 | field | field type       | description                             |
 | ----- | ---------------- | --------------------------------------- |
 | pos   | `uint64_t`*(n+1) | start position of `data` for each point |
-| data  | `int`*pos[n]     | non-zero dimensions IDs of all points   |
+| data  | `int32`*pos[n]     | non-zero dimensions IDs of all points   |
 
-`pos` is an `uint64_t` array of (n+1) length, which stores the start position of the `data` array for each sparse data point. `data` is an `int` array of pos[n] length, which store the non-zero dimensions IDs of all sparse data points. Here we assume that all non-zero dimension IDs can be represented by an `int` type integer. If the dimensionality exceeds the range of `int`, one can store the non-zero dimension IDs by `uint64_t` type with minor modification.With `pos` and `data`, one can efficient retrieve a specific data point with its data ID.
+`pos` is an `uint64_t` array of (n+1) length, which stores the start position of the `data` array for each sparse data point. `data` is an `int32` array of pos[n] length, which store the non-zero dimensions IDs of all sparse data points. Here we assume that all non-zero dimension IDs can be represented by an `int32` type integer. If the dimensionality exceeds the range of `int32`, one can store the non-zero dimension IDs by `uint64_t` type with minor modification. With `pos` and `data`, one can efficient retrieve a specific data point with its data ID.
 
 For example, suppose there is a sparse data set with four points: `x_0={1,3,5,8}`, `x_1={1,3}`, `x_2={1,6,8}`, and `x_3={1,8,10}`. Then, the `pos` array is `[0,4,6,9,12]`, e.g., pos[0]=0, pos[4]=12. And the `data` array is `[1,3,5,8,1,3,1,6,8,1,8,10]`. If you want to retrieve `x_1`, you can first get its start position of `data` and its length from `pos` by its data ID `1`, i.e., start position is `pos[1]=4`, and its length is `pos[1+1]-pos[1]=6-4=2`. Then you can retrieve `x_1` from `data` by the start position `4` and its length `2`, i.e., `x_1={1,3}`.
 
 ## Compilation
 
-The source codes require ```g++``` with ```c++11``` support. We have provided `Makefile` for compilation. Users can use the following commands to compile the source codes:
+The source codes only require `g++` with `C++11` support. We have provided `Makefile` for compilation. Users can use the following commands to compile the source codes:
 
 ```bash
 cd k_freqitemspp/
