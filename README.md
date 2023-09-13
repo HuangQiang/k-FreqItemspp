@@ -8,14 +8,36 @@ k-FreqItems++ is a sparse data clustering method based on Jaccard distance. This
 - Auto-detect and leverage all CPU threads for parallel computation
 - Parameter-light (only need to set $k$ and $\alpha$)
 
-## Data Format
 
-We have enclosed two small sparse data sets Amazon and News20 as toy examples for testing. The input sparse data sets are stored in binary format, where each file consists of two fields: `pos` and `data`, as shown below:
+## Data Sets
+
+### Data Sets Details
+
+We have enclosed two small sparse data sets Amazon and News20 as toy examples for testing.
+Users can also consider other sparse data sets with ground truth laebls for performance evaluation, i.e., [RCV1](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multiclass.html#rcv1.multiclass), [URL](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#url), [Avazu](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#avazu), [KDD2012](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#kdd2012), [Criteo10M and Criteo1B](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#criteo_tb)). Users can download the data sets [here](https://drive.google.com/drive/folders/1UceZI0xjBC7WQTmzGVOF4DGDBq481tPx?usp=sharing). 
+
+Since this repo consider a single machine version without using GPU, users should employ the data from `XXX/1/` folder, e.g., `URL/1/` for the URL dataset. Once you have downloaded the datasets, please put the data into the `data/1/` folder (or change to another directory by changing the data path in the bash script simultaneously).
+
+The statistics of data sets are summarized as follows.
+
+| Data Sets | # Data            | # Dim             | # Non-Zero Dim | Data Size | Global $\alpha$ | Local $\alpha$ |
+| --------- | ----------------- | ----------------- | -------------- | --------- | --------------- | -------------- |
+| News20    | $2.0 \times 10^4$ | $6.2 \times 10^4$ | 80             | 6.3 MB    | 0.2             | -              |
+| RCV1      | $5.3 \times 10^5$ | $4.7 \times 10^4$ | 65             | 136 MB    | 0.2             | -              |
+| URL       | $2.3 \times 10^6$ | $2.3 \times 10^6$ | 116            | 1.1 GB    | 0.4             | 0.2            |
+| Criteo10M | $1.0 \times 10^7$ | $1.0 \times 10^6$ | 39             | 1.6 GB    | 0.2             | 0.1            |
+| Avazu     | $4.0 \times 10^7$ | $1.0 \times 10^6$ | 15             | 2.6 GB    | 0.3             | 0.2            |
+| KDD2012   | $1.5 \times 10^8$ | $5.4 \times 10^7$ | 11             | 7.3 GB    | 0.5             | 0.2            |
+| Criteo1B  | $1.0 \times 10^9$ | $1.0 \times 10^6$ | 39             | 153 GB    | 0.2             | 0.1            |
+
+### Data Format
+
+The input sparse data sets are stored in binary format, where each file consists of two fields: `pos` and `data`, as shown below:
 
 | field | field type       | description                             |
 | ----- | ---------------- | --------------------------------------- |
 | pos   | `uint64_t`*(n+1) | start position of `data` for each point |
-| data  | `int32`*pos[n]     | non-zero dimensions IDs of all points   |
+| data  | `int32`*pos[n]   | non-zero dimensions IDs of all points   |
 
 `pos` is an `uint64_t` array of (n+1) length, which stores the start position of the `data` array for each sparse data point. `data` is an `int32` array of pos[n] length, which store the non-zero dimensions IDs of all sparse data points. Here we assume that all non-zero dimension IDs can be represented by an `int32` type integer. If the dimensionality exceeds the range of `int32`, one can store the non-zero dimension IDs by `uint64_t` type with minor modification. With `pos` and `data`, one can efficient retrieve a specific data point with its data ID.
 
@@ -37,12 +59,13 @@ We have provided bash scripts to run k-FreqItems++. Users can set up different k
 
 ```bash
 cd k_freqitemspp/
-./run_news20.sh # or ./run_amazon.sh
+./run_news20.sh   # the results can be found in `results/News20/`
+./run_amazon.sh   # the results can be found in `results/Amazon/`
 ```
 
 ## Parameter Settings
 
-In this repo, there are 6 parameters for k-FreqItems++, i.e., `n` (cardinality of data sets), `k` (number of pre-specified clusters), `alpha` (threshold for cluster center), `f` (data set format, `int32` by default), `dset` (address of data set), and `ofolder` (a folder to store output results). 
+In this repo, there are 6 parameters for k-FreqItems++, i.e., `n` (cardinality of data sets), `k` (number of pre-specified clusters), `alpha` (threshold for cluster center), `f` (data set format, `int32` by default), `dset` (address of data set), and `ofolder` (a folder to store output results).
 
 ### The Setting of $k$
 
@@ -55,3 +78,22 @@ It should be noted that users need to set up an extra parameter called $\alpha$ 
 Besides, we have provided scripts together with the running scripts to illustrate how to tune this parameter (e.g., `run_amazon.sh` and `run_news20.sh`). If users plan to achieve near-optimal results, they can run those scripts for setting a near-optimal $\alpha$.
 
 Thank you for your interests. It is welcome to contact me (huangq@comp.nus.edu.sg) if you meet any issue.
+
+## Reference
+
+Thank you so much for being so patient to read the user manual. We will appreciate using the following BibTeX to cite this work when you use k-FreqItemspp in your paper.
+
+```tex
+@article{huang2023new,
+  title={A New Sparse Data Clustering Method Based On Frequent Items},
+  author={Huang, Qiang and Luo, Pingyi and Tung, Anthony KH},
+  journal={Proceedings of the ACM on Management of Data},
+  volume={1},
+  number={1},
+  pages={1--28},
+  year={2023},
+  publisher={ACM New York, NY, USA}
+}
+```
+
+It is welcome to contact me (<huangq@comp.nus.edu.sg>) if you meet any issue. Thank you.
